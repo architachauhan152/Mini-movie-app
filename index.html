@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #data {
+        width: 300px;
+        margin-top: 20px;
+        height: 400px;
+        text-align: center;
+        border: 1px solid red;
+        background-color: #34495E;
+        color: white;
+    }
+
+    img {
+        margin-top: 10px;
+        width: 200px;
+        height: 250px;
+    }
+
+    button {
+        width: 150px;
+        height: 30px;
+        background-color: #26A69A;
+        border: none;
+        color: white;
+        margin-top: 10px;
+
+    }
+
+
+    .parent {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    #data div {
+        font-size: 15px;
+        margin: 5px;
+        color: white;
+    }
+
+    input {
+        padding: 10px;
+        background-color: #34495E;
+        border: none;
+    }
+
+    input::placeholder {
+        color: white;
+    }
+
+    input[type=text] {
+        color: white;
+    }
+
+    #recommend {
+        color: yellow;
+    }
+</style>
+
+<body>
+    <div class="parent">
+        <input type="text" id="name" placeholder="Enter movie name">
+        <button onclick="getMovie()">Search</button>
+
+        <div id="data">
+            <img id="img" />
+            <div id="recommend" style="display: none; color: yellow;">Recommended</div>
+            <div id="data1"></div>
+            <div id="data2"></div>
+            <div id="data3"></div>
+            <div id="data4"></div>
+        </div>
+
+        <div id="errorfound" style="display: none;">
+            <img src="https://image.shutterstock.com/image-vector/404-not-found-error-icon-260nw-1889718397.jpg">
+        </div>
+    </div>
+
+
+
+</body>
+<script>
+    async function getMovie() {
+
+        try {
+            let movieName = document.getElementById('name').value;
+            // console.log(movieName);
+            let response = await fetch(`http://www.omdbapi.com/?t=${movieName}&apikey=b2e7052a`);
+            let data = await response.json();
+            console.log(data);
+
+            if (data.Response == 'False') {
+                let error = document.getElementById('errorfound');
+                error.style.display = 'block';
+                let d = document.getElementById("data");
+                d.style.display = "none"
+            }
+            if (data.Response == 'True') {
+                let error = document.getElementById('errorfound');
+                error.style.display = 'none';
+                let d = document.getElementById("data");
+                d.style.display = "block"
+            }
+
+
+            let div = document.getElementById("data");
+
+            let name = document.getElementById("data1");
+            name.innerHTML = data.Title;
+
+            let re = document.createElement('p');
+            re.innerHTML = "Recommended";
+            re.style.display = "none";
+
+            let rating = document.getElementById('data2');
+            rating.innerHTML = data.imdbRating;
+
+
+            let movie_language = document.getElementById('data3');
+            movie_language.innerHTML = data.Language;
+
+
+            let image = document.getElementById('img');
+            image.src = data.Poster;
+
+            let release_date = document.getElementById('data4');
+            release_date.innerHTML = data.Released;
+
+
+            if (data.imdbRating > 8.5) {
+                let re = document.getElementById('recommend');
+                re.style.display = "block";
+            } else {
+                let re = document.getElementById('recommend');
+                re.style.display = "none";
+            }
+
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+</script>
+
+</html>
